@@ -1,33 +1,26 @@
-import asyncio
 import hashlib
+import asyncio
 
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import RedirectResponse, Response
-from models import URL_MODEL, Base
-from schemas import URL_SCHEMA
+from fastapi import HTTPException, APIRouter
+from fastapi.responses import RedirectResponse
 from sqlalchemy.future import select
-from database import engine, SessionDep
 
-app = FastAPI()
+from models import URL_MODEL
+from schemas import URL_SCHEMA
+from database import SessionDep
 
-
-
-@app.post("/setup")
-async def setup_db():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)
-        await conn.run_sync(Base.metadata.create_all)
-    
-
+#################
 async def hash_url(url) -> str:
     def compute_hash():
         full_hash = hashlib.sha256(url.encode('utf-8')).hexdigest()
         return full_hash[:5]
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(None, compute_hash)
+##################
 
+router = APIRouter()
 
-@app.post("/posturl")
+@router.post("/posturl")
 async def post_url(url:URL_SCHEMA, session:SessionDep):
     ######
     result = await session.execute(
@@ -48,7 +41,7 @@ async def post_url(url:URL_SCHEMA, session:SessionDep):
 
     return{"url":new_url.short_url}
 
-@app.get("/{short_hash}")
+@router.get("/{short_hash}")
 async def redirect(short_hash:str,
                    session: SessionDep):
     result = await session.execute(
@@ -57,7 +50,8 @@ async def redirect(short_hash:str,
     url_obj = result.scalar_one_or_none()
     if not url_obj:
         raise HTTPException(
-            status_code=404
+            status_code=404,
+            detail="Cant find URL"
         )
     
     url_obj.clicks+=1
