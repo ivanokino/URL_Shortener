@@ -23,8 +23,9 @@ router = APIRouter()
 @router.post("/posturl")
 async def post_url(url:URL_SCHEMA, session:SessionDep):
     ######
+
     result = await session.execute(
-        select(URL_MODEL).where(URL_MODEL.long_url == url.long_url)
+        select(URL_MODEL).where(URL_MODEL.long_url == str(url.long_url))
     )
     url_obj = result.scalar_one_or_none()
     if url_obj:
@@ -32,10 +33,10 @@ async def post_url(url:URL_SCHEMA, session:SessionDep):
     ######
 
     new_url = URL_MODEL()
-    new_url.long_url = url.long_url
+    new_url.long_url = str(url.long_url)
     
     
-    new_url.short_url = await hash_url(url.long_url)  
+    new_url.short_url = await hash_url(str(url.long_url))  
     session.add(new_url)
     await session.commit()
 

@@ -1,7 +1,7 @@
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, HttpUrl
 
 class URL_SCHEMA(BaseModel):
-    long_url:str = Field(min_length=1)
+    long_url:HttpUrl
     
     

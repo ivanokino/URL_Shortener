@@ -8,3 +8,4 @@ An async URL shortener service with authentication.
 *   **ORM:** SQLAlchemy
 *   **Database:** SQLite
 *   **URL Hashing:** hashlib
+*   **Validation:** pydantic
