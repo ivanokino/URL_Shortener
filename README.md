@@ -1,2 +1,10 @@
 # URL_Shortener
-An async URL shortener built with FastAPI and SQLite. It uses hashlib for hashing and SQLAlchemy for database interaction.
+
+An async URL shortener service with authentication.
+
+## Tech Stack
+
+*   **Framework:** FastAPI
+*   **ORM:** SQLAlchemy
+*   **Database:** SQLite
+*   **URL Hashing:** hashlib
