@@ -9,3 +9,4 @@ An async URL shortener service with authentication.
 *   **Database:** SQLite
 *   **URL Hashing:** hashlib
 *   **Validation:** pydantic
+*   **Tests:** pytest
