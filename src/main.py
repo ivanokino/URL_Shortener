@@ -12,6 +12,6 @@ main_router.include_router(handlers_router)
 app.include_router(main_router)
 
 if __name__ == "__main__":
-    uvicorn.run(app="main:app", reload = True)
+    uvicorn.run(app="main:app", reload = True, host="0.0.0.0")
 
 

@@ -5,8 +5,8 @@ from fastapi import HTTPException, APIRouter
 from fastapi.responses import RedirectResponse
 from sqlalchemy.future import select
 
-from models import URL_MODEL
-from schemas import URL_SCHEMA
+from models_and_schemas.models import URL_MODEL
+from models_and_schemas.schemas import URL_SCHEMA
 from database import SessionDep
 
 #################
@@ -19,6 +19,9 @@ async def hash_url(url) -> str:
 ##################
 
 router = APIRouter()
+@router.get("/")
+async def main():
+    return {"IsOK": True}
 
 @router.post("/posturl")
 async def post_url(url:URL_SCHEMA, session:SessionDep):
@@ -29,7 +32,7 @@ async def post_url(url:URL_SCHEMA, session:SessionDep):
     )
     url_obj = result.scalar_one_or_none()
     if url_obj:
-        return {"url":url_obj.short_url }
+        return {"url":url_obj.short_url}
     ######
 
     new_url = URL_MODEL()

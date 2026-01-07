@@ -1,7 +1,7 @@
 from fastapi import Depends, APIRouter
 from typing import Annotated
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from models import Base
+from models_and_schemas.models import Base
 
 router = APIRouter()
 
@@ -12,6 +12,7 @@ new_session = async_sessionmaker(engine, expire_on_commit=False)
 async def get_session():
     async with new_session() as session:
         yield session
+
 SessionDep = Annotated[AsyncSession, Depends(get_session)]
 
 
@@ -20,5 +21,15 @@ async def setup_db():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
         await conn.run_sync(Base.metadata.create_all)
+
+
+tests_engine = create_async_engine("sqlite+aiosqlite:///urls.db") 
+
+test_session = async_sessionmaker(tests_engine, expire_on_commit=False)
+
+async def init_test_db():
+    async with tests_engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+        
 
 
